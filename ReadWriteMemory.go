@@ -2,16 +2,13 @@ package main
 
 import (
 	"encoding/binary"
-	"encoding/hex"
 	"fmt"
 	"math"
-	"regexp"
 	"strings"
 	"syscall"
 	"unsafe"
 
-	"github.com/Xustyx/w32"
-	log "github.com/sirupsen/logrus"
+	"github.com/Werew1942/w32"
 )
 
 const (
@@ -51,15 +48,15 @@ type Module struct {
 	ModBaseSize uint32
 }
 
-func init() {
-	log.SetFormatter(
-		&log.TextFormatter{
-			PadLevelText:    true,
-			TimestampFormat: "15:04:05",
-			ForceColors:     true,
-		},
-	)
-}
+// func init() {
+// 	log.SetFormatter(
+// 		&log.TextFormatter{
+// 			PadLevelText:    true,
+// 			TimestampFormat: "15:04:05",
+// 			ForceColors:     true,
+// 		},
+// 	)
+// }
 
 func VirtualQueryEx(hProcess w32.HANDLE, lpAddress uintptr) (MemoryBasicInformation, error) {
 	mbi := MemoryBasicInformation{}
@@ -393,52 +390,52 @@ func (p *Process) WriteFloats(address uintptr, data []float32) error {
 	return nil
 }
 
-func (p *Process) AOBScan(mod Module, pattern string, dereference bool, offset int, extra int) (uintptr, error) {
-	// Credits to Rake @ https://guidedhacking.com/threads/external-internal-pattern-scanning-guide.14112/
+// func (p *Process) AOBScan(mod Module, pattern string, dereference bool, offset int, extra int) (uintptr, error) {
+// 	// Credits to Rake @ https://guidedhacking.com/threads/external-internal-pattern-scanning-guide.14112/
 
-	repl := strings.NewReplacer("?", "..", "??", "..", "x", "..", "X", "..", "*", "..", "**", "..", " ", "")
+// 	repl := strings.NewReplacer("?", "..", "??", "..", "x", "..", "X", "..", "*", "..", "**", "..", " ", "")
 
-	re, err := regexp.Compile(repl.Replace(strings.ToLower(pattern)))
-	if err != nil {
-		return uintptr(0), fmt.Errorf("can't compile pattern (%s)", pattern)
-	}
+// 	re, err := regexp.Compile(repl.Replace(strings.ToLower(pattern)))
+// 	if err != nil {
+// 		return uintptr(0), fmt.Errorf("can't compile pattern (%s)", pattern)
+// 	}
 
-	mbi, err := VirtualQueryEx(p.Handle, mod.ModBaseAddr)
-	if err != nil {
-		return uintptr(0), err
-	}
+// 	mbi, err := VirtualQueryEx(p.Handle, mod.ModBaseAddr)
+// 	if err != nil {
+// 		return uintptr(0), err
+// 	}
 
-	for curr := mod.ModBaseAddr; curr < mod.ModBaseAddr+uintptr(mod.ModBaseSize); curr += mbi.RegionSize {
-		mbi, _ = VirtualQueryEx(p.Handle, curr)
-		if mbi.State != MEM_COMMIT || mbi.Protect == PAGE_NOACCESS {
-			continue
-		}
+// 	for curr := mod.ModBaseAddr; curr < mod.ModBaseAddr+uintptr(mod.ModBaseSize); curr += mbi.RegionSize {
+// 		mbi, _ = VirtualQueryEx(p.Handle, curr)
+// 		if mbi.State != MEM_COMMIT || mbi.Protect == PAGE_NOACCESS {
+// 			continue
+// 		}
 
-		oldProt, err := VirtualProtectEx(p.Handle, mbi.BaseAddress, mbi.RegionSize, PAGE_EXECUTE_READWRITE)
-		if err != nil {
-			continue
-		}
+// 		oldProt, err := VirtualProtectEx(p.Handle, mbi.BaseAddress, mbi.RegionSize, PAGE_EXECUTE_READWRITE)
+// 		if err != nil {
+// 			continue
+// 		}
 
-		read, err := p.ReadBytes(mbi.BaseAddress, uint(mbi.RegionSize))
-		if err != nil {
-			continue
-		}
-		log.Debugf("Scanning 0x%06X - 0x%06X", mbi.BaseAddress, mbi.BaseAddress+mbi.RegionSize)
+// 		read, err := p.ReadBytes(mbi.BaseAddress, uint(mbi.RegionSize))
+// 		if err != nil {
+// 			continue
+// 		}
+// 		log.Debugf("Scanning 0x%06X - 0x%06X", mbi.BaseAddress, mbi.BaseAddress+mbi.RegionSize)
 
-		_, _ = VirtualProtectEx(p.Handle, mbi.BaseAddress, mbi.RegionSize, oldProt)
+// 		_, _ = VirtualProtectEx(p.Handle, mbi.BaseAddress, mbi.RegionSize, oldProt)
 
-		if index := re.FindStringIndex(strings.ToLower(hex.EncodeToString(read))); len(index) > 0 {
-			log.Debugf("Pattern hit at 0x%06X", uintptr(index[0]/2)+curr)
-			if dereference {
-				scanPtr, err := p.ReadIntPtr(uintptr(index[0]/2) + curr + uintptr(offset))
-				if err != nil {
-					return uintptr(0), err
-				}
-				return scanPtr + uintptr(extra), nil
-			}
-			return uintptr(index[0]/2) + curr, nil
-		}
-	}
+// 		if index := re.FindStringIndex(strings.ToLower(hex.EncodeToString(read))); len(index) > 0 {
+// 			log.Debugf("Pattern hit at 0x%06X", uintptr(index[0]/2)+curr)
+// 			if dereference {
+// 				scanPtr, err := p.ReadIntPtr(uintptr(index[0]/2) + curr + uintptr(offset))
+// 				if err != nil {
+// 					return uintptr(0), err
+// 				}
+// 				return scanPtr + uintptr(extra), nil
+// 			}
+// 			return uintptr(index[0]/2) + curr, nil
+// 		}
+// 	}
 
-	return uintptr(0), fmt.Errorf("pattern not found")
-}
+// 	return uintptr(0), fmt.Errorf("pattern not found")
+// }
