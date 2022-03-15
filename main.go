@@ -9,7 +9,7 @@ import (
 	"os/exec"
 )
 
-const STORE_OWNERSHIP_CHECK_OFFSET = 0x115CDD6
+const STORE_OWNERSHIP_CHECK_OFFSET = 0x120E7A6
 
 func downloadBrv() {
 	out, err := os.Create("loader.exe")
@@ -34,7 +34,7 @@ func downloadBrv() {
 }
 
 func main() {
-	downloadBrv()
+	// downloadBrv()
 
 	process, err := ProcessByName("Minecraft.Windows")
 	if err != nil {
