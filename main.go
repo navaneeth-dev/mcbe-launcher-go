@@ -115,7 +115,6 @@ func main() {
 		fmt.Scanln()
 		return
 	}
-	log.Printf("Base: 0x%06X 0x%X", process.ModBaseAddr, process.ModBaseAddr+STORE_OWNERSHIP_CHECK_OFFSET)
 
 	err = process.WriteBytesSigned(process.ModBaseAddr+STORE_OWNERSHIP_CHECK_OFFSET, []int8{-21})
 	if err != nil {
@@ -127,6 +126,7 @@ func main() {
 	// Display patched after covenant, but patched over already so game will work
 	covenant()
 
+	log.Printf("Base: 0x%06X 0x%X", process.ModBaseAddr, process.ModBaseAddr+STORE_OWNERSHIP_CHECK_OFFSET)
 	fmt.Printf("Patched! %x\n", process.ModBaseAddr+STORE_OWNERSHIP_CHECK_OFFSET)
 	fmt.Println("Press ENTER to exit...")
 	fmt.Scanln()
