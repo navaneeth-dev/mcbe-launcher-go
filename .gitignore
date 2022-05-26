@@ -1,4 +1,4 @@
-mcbe-launcher-go.exe
+*.exe
 loader.exe
 
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode

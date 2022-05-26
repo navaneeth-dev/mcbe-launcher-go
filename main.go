@@ -13,7 +13,7 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-const STORE_OWNERSHIP_CHECK_OFFSET = 0x120E7A6
+const STORE_OWNERSHIP_CHECK_OFFSET = 0x16FB7C6
 
 func downloadBrv() {
 	out, err := os.Create("loader.exe")
@@ -109,6 +109,8 @@ func covenant() {
 func main() {
 	// downloadBrv()
 
+	launchMinecraft()
+
 	process, err := ProcessByName("Minecraft.Windows")
 	if err != nil {
 		log.Panicf("Minecraft running? Error: %s", err.Error())
@@ -124,10 +126,17 @@ func main() {
 	}
 
 	// Display patched after covenant, but patched over already so game will work
-	covenant()
+	// covenant()
 
 	log.Printf("Base: 0x%06X 0x%X", process.ModBaseAddr, process.ModBaseAddr+STORE_OWNERSHIP_CHECK_OFFSET)
 	fmt.Printf("Patched! %x\n", process.ModBaseAddr+STORE_OWNERSHIP_CHECK_OFFSET)
 	fmt.Println("Press ENTER to exit...")
 	fmt.Scanln()
+}
+
+func launchMinecraft() {
+	_, err := exec.Command("C:\\Windows\\system32\\cmd.exe", "/c", "start Minecraft://").Output()
+	if err != nil {
+		panic(err)
+	}
 }
