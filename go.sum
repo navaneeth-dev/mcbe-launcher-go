@@ -1,4 +1,2 @@
-github.com/Werew1942/w32 v1.0.2 h1:Z2BUDI9K5xEREEVGuwkMKXatf5EqPjq8kFDvQhe67og=
-github.com/Werew1942/w32 v1.0.2/go.mod h1:vQP1YZkdCzBJUcG8GH9SRom51lZh/Z9R9d1ruxnVKPs=
-golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8 h1:OH54vjqzRWmbJ62fjuhxy7AxFFgoHN0/DPc/UrL8cAs=
-golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+github.com/navaneeth-dev/w32 v1.0.3 h1:d0C2mgLM+eMW+D3znDT3ikQfpqh0GL/IbLt4E4D34Rw=
+github.com/navaneeth-dev/w32 v1.0.3/go.mod h1:AyV7YHPFl8sFwMfWC7OwvMCqwDwv8s7/DL0g23wwmhA=

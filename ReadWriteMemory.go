@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/Werew1942/w32"
+	"github.com/navaneeth-dev/w32"
 )
 
 const (
